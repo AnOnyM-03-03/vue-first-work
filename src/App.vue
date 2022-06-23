@@ -1,24 +1,37 @@
 <template>
 <div class="app">
+
     <h1>Страница с постами</h1>
-    <my-button
-    style="margin:10px 0"
-    @click="showDialog"
-    >
-     Создать пост
-    </my-button>
+    <my-input
+        v-model="search"
+        placeholder="поиск...."
+    />
+    <div class="app-btns">
+        <my-button
+            @click="showDialog"
+            >
+            Создать пост
+        </my-button>
+        <my-select
+            v-model="selectedSort"
+            :options="sortOptions"
+        />
+    </div>
     <my-dialog
          :show="dialogVisible">
+
          <post-form
          @create="createPost"
          />
     </my-dialog>
+
     <postList 
-    v-bind:posts="posts"
+    v-bind:posts="searchPosts"
     @remove="removePost"
     v-if="!isPostLoading"
     />
     <div v-else>Идет загрузка...</div>
+
 </div>   
 </template>
 
@@ -37,6 +50,12 @@ data(){
         posts:[],
         dialogVisible:false,
         isPostLoading: false,
+        selectedSort:'',
+        search:'',
+        sortOptions:[
+            {value:'name', title:'По названию'},
+            {value:'username', title:'По содержанию'},
+        ]
 
     }
 },
@@ -65,6 +84,14 @@ methods:{
         }
     }
 },
+computed:{
+    sortedPost() {
+        return [...this.posts].sort((post1,post2) =>post1[this.selectedSort]?.localeCompare(post2[this.selectedSort]))
+    },
+    searchPosts(){
+        return this.sortedPost.filter(post => post.name.toLowerCase().includes(this.search.toLowerCase()))
+    }
+},
 mounted(){
     this.fetchPosts()
 }
@@ -82,6 +109,12 @@ mounted(){
 
 .app{
     padding: 30px;
+}
+.app-btns{
+    display: flex;
+    justify-content: space-between;
+    margin:10px 0
+
 }
 
 
