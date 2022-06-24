@@ -2,7 +2,7 @@
      <div class="post">
         <div>
             <div><strong>Name:</strong> {{post.name}}</div>
-            <div><strong>Age:</strong>{{post.age}}</div>
+            <div><strong>username:</strong>{{post.username}}</div>
         </div>
         <div class="post-buttons">
             <my-button

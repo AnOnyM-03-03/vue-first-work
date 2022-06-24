@@ -8,10 +8,10 @@
         placeholder="name"/>
         <my-input
         class="input" 
-        v-model="post.age"
-        @input="post.age = $event.target.value"
+        v-model="post.username"
+        @input="post.username = $event.target.value"
         type="text" 
-        placeholder="age"/>
+        placeholder="username"/>
         <my-button
          @click="createPost"
          style="margin-top:15px"
@@ -26,7 +26,7 @@ export default{
             post:{
             id:'',
             name:'',
-            age:''
+            username:''
             }
             
         }
@@ -37,7 +37,7 @@ export default{
         this.$emit('create', this.post)
         this.post = {
             name:'',
-            age:''
+            username:''
         }
     }
         }
