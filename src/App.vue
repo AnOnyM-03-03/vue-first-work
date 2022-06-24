@@ -32,6 +32,19 @@
     />
     <div v-else>Идет загрузка...</div>
 
+    <div class="page-wrapper">
+        <div 
+        v-for="pageNum in totalPage" 
+        :key="pageNum"
+        class="page"
+        :class="{
+            'active-page':page === pageNum
+        }"
+        @click="changePage(pageNum)"
+        > {{pageNum}}
+        </div>
+    </div>
+
 </div>   
 </template>
 
@@ -52,6 +65,9 @@ data(){
         isPostLoading: false,
         selectedSort:'',
         search:'',
+        page:1,
+        limit:3,
+        totalPage:0,
         sortOptions:[
             {value:'name', title:'По названию'},
             {value:'username', title:'По содержанию'},
@@ -74,7 +90,13 @@ methods:{
     async fetchPosts(){
         try{
         this.isPostLoading = true
-        const resp = await axios.get('https://jsonplaceholder.typicode.com/users')
+        const resp = await axios.get('https://jsonplaceholder.typicode.com/users',{
+            params:{
+                _page:this.page,
+                _limit:this.limit
+            }
+        })
+        this.totalPage = Math.ceil(resp.headers['x-total-count'] / this.limit)
         this.posts = resp.data
         }catch(e){
             alert("Ошибка")
@@ -82,6 +104,9 @@ methods:{
         finally{
         this.isPostLoading = false
         }
+    },
+    changePage(pageNum){
+        this.page = pageNum
     }
 },
 computed:{
@@ -90,6 +115,11 @@ computed:{
     },
     searchPosts(){
         return this.sortedPost.filter(post => post.name.toLowerCase().includes(this.search.toLowerCase()))
+    }
+},
+watch:{
+    page(){
+        this.fetchPosts()
     }
 },
 mounted(){
@@ -115,6 +145,17 @@ mounted(){
     justify-content: space-between;
     margin:10px 0
 
+}
+.page-wrapper{
+    display: flex;
+    margin-top: 15px;
+}
+.page{
+    border: 1px solid #000;
+    padding: 10px;
+}
+.active-page{
+    background-color: aquamarine;
 }
 
 
