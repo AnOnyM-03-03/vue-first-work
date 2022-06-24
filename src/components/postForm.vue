@@ -1,18 +1,21 @@
 <template>
     <form @submit.prevent>
-        <input
+        <my-input
         class="input" 
         v-model="post.name" 
         @input="post.name = $event.target.value"
         type="text" 
-        placeholder="name">
-        <input
+        placeholder="name"/>
+        <my-input
         class="input" 
         v-model="post.age"
         @input="post.age = $event.target.value"
         type="text" 
-        placeholder="age">
-        <button @click="createPost">add posts</button>
+        placeholder="age"/>
+        <my-button
+         @click="createPost"
+         style="margin-top:15px"
+         />
     </form>
 </template>
 
@@ -21,6 +24,7 @@ export default{
     data(){
         return{
             post:{
+            id:'',
             name:'',
             age:''
             }
@@ -48,16 +52,6 @@ form{
     flex-direction: column;
 
 }
-button{
-    align-self: flex-end;
-    margin-top: 15px;
-    padding: 10px;
-    background-color: aqua;
-}
-.input{
-    width: 100%;
-    border: 3px solid #03c292;
-    padding: 10px;
-    margin-top: 10px;
-}
+
+
 </style>
