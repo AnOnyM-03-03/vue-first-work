@@ -22,5 +22,6 @@ button{
     align-self: flex-end;
     padding: 10px;
     background-color: aqua;
+    cursor: pointer;
 }
 </style>
