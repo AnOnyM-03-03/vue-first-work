@@ -32,6 +32,8 @@
     />
     <div v-else>Идет загрузка...</div>
 
+    <div ref="endPage" class="end-page"></div>
+
 </div>   
 </template>
 
@@ -52,6 +54,9 @@ data(){
         isPostLoading: false,
         selectedSort:'',
         search:'',
+        page:1,
+        limit:3,
+        totalPage:0,
         sortOptions:[
             {value:'name', title:'По названию'},
             {value:'username', title:'По содержанию'},
@@ -74,7 +79,13 @@ methods:{
     async fetchPosts(){
         try{
         this.isPostLoading = true
-        const resp = await axios.get('https://jsonplaceholder.typicode.com/users')
+        const resp = await axios.get('https://jsonplaceholder.typicode.com/users',{
+            params:{
+                _page:this.page,
+                _limit:this.limit
+            }
+        })
+        this.totalPage = Math.ceil(resp.headers['x-total-count'] / this.limit)
         this.posts = resp.data
         }catch(e){
             alert("Ошибка")
@@ -82,8 +93,24 @@ methods:{
         finally{
         this.isPostLoading = false
         }
-    }
+    },
+    async loadMorePosts(){
+        try{
+        this.page += 1
+        const resp = await axios.get('https://jsonplaceholder.typicode.com/users',{
+            params:{
+                _page:this.page,
+                _limit:this.limit
+            }
+        })
+        this.totalPage = Math.ceil(resp.headers['x-total-count'] / this.limit)
+        this.posts = [...this.posts, ...resp.data]
+        }catch(e){
+            alert("Ошибка")
+        }
+    },
 },
+   
 computed:{
     sortedPost() {
         return [...this.posts].sort((post1,post2) =>post1[this.selectedSort]?.localeCompare(post2[this.selectedSort]))
@@ -94,6 +121,18 @@ computed:{
 },
 mounted(){
     this.fetchPosts()
+    const options = {
+    rootMargin: '0px',
+    threshold: 1.0
+}
+
+    const callback = (entries) => {
+        if(entries[0].isIntersecting){
+                this.loadMorePosts()
+            }
+    }
+    const observer = new IntersectionObserver(callback, options);
+    observer.observe(this.$refs.endPage)
 }
 
 }
@@ -115,6 +154,18 @@ mounted(){
     justify-content: space-between;
     margin:10px 0
 
+}
+.page-wrapper{
+    display: flex;
+    margin-top: 15px;
+}
+.page{
+    border: 1px solid #000;
+    padding: 10px;
+}
+.end-page{
+height: 30px;
+background-color: aquamarine;
 }
 
 
