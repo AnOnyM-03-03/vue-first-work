@@ -1,10 +1,16 @@
 <template>
      <div class="post">
         <div>
+            <div><strong>Id:</strong> {{post.id}}</div>
             <div><strong>Name:</strong> {{post.name}}</div>
             <div><strong>username:</strong>{{post.username}}</div>
         </div>
         <div class="post-buttons">
+            <my-button
+            @click="$router.push(`/post/${post.id}`)"
+            >
+            Открыть
+            </my-button>
             <my-button
             @click="$emit('remove', post)"
             >
@@ -34,7 +40,7 @@ return{ }
 
 </script>
 
-<style>
+<style scoped>
 .post{
     padding: 15px;
     border: 3px solid #c0c00f;
@@ -42,6 +48,10 @@ return{ }
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+}
+.post-buttons{
+    display: flex;
 
 }
 </style>
